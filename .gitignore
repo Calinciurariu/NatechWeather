@@ -12,7 +12,8 @@
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-
+# secrets
+**/WeatherService.Secrets.cs
 # Mono auto generated files
 mono_crash.*
 

@@ -1,4 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
+using NatechWeather.Helpers;
+using NatechWeather.Interfaces;
+using NatechWeather.Services;
+using NatechWeather.ViewModels;
+using NatechWeather.Views;
 
 namespace NatechWeather
 {
@@ -9,10 +15,22 @@ namespace NatechWeather
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
+                .UseCustomNavigation()
+                .RegisterAppServices()
+                .RegisterViewModels()
+                .RegisterViews()
+                .MapViewMoldelsToPages()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("FontAwesome6Brands.otf", "FontAwesomeBrands");
+                    fonts.AddFont("FontAwesome6Duotone.otf", "FontAwesomeDuotone");
+                    fonts.AddFont("FontAwesome6Light.otf", "FontAwesomeLight");
+                    fonts.AddFont("FontAwesome6Regular.otf", "FontAwesomeRegular");
+                    fonts.AddFont("FontAwesome6Solid.otf", "FontAwesomeSolid");
+                    fonts.AddFont("FontAwesome6Thin.otf", "FontAwesomeThin");
                 });
 
 #if DEBUG
@@ -20,6 +38,29 @@ namespace NatechWeather
 #endif
 
             return builder.Build();
+        }
+        public static MauiAppBuilder MapViewMoldelsToPages(this MauiAppBuilder mauiAppBuilder)
+        {
+            Initializer.RegisterViewModelToPage<MainPage, MainPageViewModel>();
+            Initializer.RegisterViewModelToPage<WeatherPage, WeatherPageViewModel>();
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddSingleton<IWeatherService, WeatherService>();
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddTransient<MainPageViewModel>();
+            mauiAppBuilder.Services.AddTransient<WeatherPageViewModel>();
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddTransient<MainPage>();
+            mauiAppBuilder.Services.AddTransient<WeatherPage>();
+            return mauiAppBuilder;
         }
     }
 }
