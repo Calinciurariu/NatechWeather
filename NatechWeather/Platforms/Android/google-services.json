@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "969877606702",
+    "project_id": "natechweather",
+    "storage_bucket": "natechweather.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969877606702:android:140d36a14cdd202e4d6abf",
+        "android_client_info": {
+          "package_name": "com.ditech.natechweather"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBomQ7GTPOmbP5Z4DQRdzBRLgZMkITMVmA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
