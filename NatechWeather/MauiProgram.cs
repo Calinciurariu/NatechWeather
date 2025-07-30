@@ -5,7 +5,7 @@ using NatechWeather.Interfaces;
 using NatechWeather.Services;
 using NatechWeather.ViewModels;
 using NatechWeather.Views;
-
+using SkiaSharp.Views.Maui.Controls.Hosting; 
 namespace NatechWeather
 {
     public static class MauiProgram
@@ -21,6 +21,7 @@ namespace NatechWeather
                 .RegisterViewModels()
                 .RegisterViews()
                 .MapViewMoldelsToPages()
+                .UseSkiaSharp()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

@@ -4,10 +4,14 @@
              xmlns:viewModels="clr-namespace:NatechWeather.ViewModels"
              xmlns:converter="clr-namespace:NatechWeather.Converters"
              x:DataType="viewModels:MainPageViewModel"
+             xmlns:skia="clr-namespace:SkiaSharp;assembly=SkiaSharp"
+             xmlns:charts="clr-namespace:NatechCharts.Controls;assembly=NatechCharts"
              x:Class="NatechWeather.Views.MainPage">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converter:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converter:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+            <converter:IsNotNullConverter x:Key="IsNotNullConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <VerticalStackLayout
@@ -32,6 +36,32 @@
         <Button Text="Fetch weather"
                 Command="{Binding GetWeatherInTenSecondsCommand}"
                 HorizontalOptions="Fill" />
+        <VerticalStackLayout IsVisible="{Binding WeatherResult, Converter={StaticResource IsNotNullConverter}}">
+            <Label Text="{Binding WeatherResult.Name, StringFormat='Current Weather for {0}'}"
+                   Style="{DynamicResource Headline}" />
+            <Label Text="{Binding WeatherResult.Main.Temp, StringFormat='{0:F1}°C'}"
+                   FontSize="48"
+                   HorizontalOptions="Center" />
+            <Label Text="{Binding WeatherResult.Weather}"
+                   FontSize="18"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <charts:LineChart ItemsSource="{Binding WeatherForecastData}"
+                          HeightRequest="300"
+                          IsVisible="{Binding WeatherForecastData.Count, Converter={StaticResource IsGreaterThanZeroConverter}}">
+            <charts:LineChart.Series>
+                <charts:LineSeries ItemsSource="{Binding WeatherForecastData}"
+                                   Label="Temperature"
+                                   XValuePath="Dt"
+                                   YValuePath="Main.Temp">
+                    <charts:LineSeries.Color>
+                        <x:Static Member="skia:SKColors.Red" />
+                    </charts:LineSeries.Color>
+                </charts:LineSeries>
+            </charts:LineChart.Series>
+        </charts:LineChart>
+
     </VerticalStackLayout>
 
 </ContentPage>

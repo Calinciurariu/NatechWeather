@@ -52,12 +52,18 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	<PackageReference Include="Plugin.Firebase" Version="3.1.4" />
-		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.4" />
+	<!--<PackageReference Include="Plugin.Firebase" Version="3.1.4" />
+		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.4" />-->
 	</ItemGroup>
 
 	<!--  dependency conflict on firebase notification -->
-<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+<!--<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
 		<PackageReference Include="Xamarin.AndroidX.Collection.Jvm" Version="1.5.0.2" />	
-	</ItemGroup>
+	</ItemGroup>-->
+		<ItemGroup>
+  <ProjectReference Include="..\NatechCharts\NatechCharts.csproj" />
+</ItemGroup>
+		<ItemGroup>
+		  <Folder Include="Controls\" />
+		</ItemGroup>
 </Project>

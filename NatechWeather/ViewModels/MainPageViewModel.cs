@@ -3,10 +3,11 @@ using NatechWeather.Interfaces;
 using NatechWeather.Models;
 using System.Windows.Input;
 using Microsoft.Maui.Devices.Sensors;
+using System.Collections.ObjectModel;
 
 namespace NatechWeather.ViewModels
 {
-    public partial class MainPageViewModel : BaseViewModel
+    public class MainPageViewModel : BaseViewModel
     {
 
         #region Services
@@ -15,19 +16,21 @@ namespace NatechWeather.ViewModels
         #endregion
 
         #region Properties
-        private string _city;
+        private string _city = string.Empty;
         public string City
         {
             get => _city;
             set => SetProperty(ref _city, value);
         }
 
-        private WeatherResult _weatherResult;
+        private WeatherResult _weatherResult = new();
         public WeatherResult WeatherResult
         {
             get => _weatherResult;
             set => SetProperty(ref _weatherResult, value);
         }
+        public ObservableCollection<WeatherResult> WeatherForecastData { get; } = new ObservableCollection<WeatherResult>();
+
         #endregion
 
         #region Commands
@@ -60,7 +63,7 @@ namespace NatechWeather.ViewModels
 
                 if (location == null)
                 {
-                    await Shell.Current.DisplayAlert("Error", "Could not retrieve your location.", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error", "Could not retrieve your location.", "OK");
                     return;
                 }
 
@@ -74,15 +77,15 @@ namespace NatechWeather.ViewModels
             }
             catch (FeatureNotSupportedException)
             {
-                await Shell.Current.DisplayAlert("Error", "Geolocation is not supported on this device.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "Geolocation is not supported on this device.", "OK");
             }
             catch (PermissionException)
             {
-                await Shell.Current.DisplayAlert("Error", "Location permission is not granted. Please enable it in the app settings.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "Location permission is not granted. Please enable it in the app settings.", "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"An unexpected error occurred: {ex.Message}", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", $"An unexpected error occurred: {ex.Message}", "OK");
             }
         }
         private async Task GetWeatherAsync()
@@ -92,17 +95,25 @@ namespace NatechWeather.ViewModels
             IsBusy = true;
             if (string.IsNullOrWhiteSpace(City))
             {
-                await Shell.Current.DisplayAlert("Error", "Please enter a city name.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "Please enter a city name.", "OK");
                 IsBusy = false;
                 return;
             }
             try
             {
                 WeatherResult = await weatherService.GetWeatherForCityAsync(City);
+                WeatherForecastData.Clear();
+                if (WeatherResult != null)
+                {
+                    WeatherForecastData.Add(WeatherResult);
+                    WeatherForecastData.Add(new WeatherResult { Dt = WeatherResult.Dt + 3600, Main = new Main { Temp = WeatherResult.Main.Temp + 1 } });
+                    WeatherForecastData.Add(new WeatherResult { Dt = WeatherResult.Dt + 7200, Main = new Main { Temp = WeatherResult.Main.Temp - 2 } });
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching weather: {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Error", "Failed to fetch weather data.", "OK");
             }
             finally
             {
