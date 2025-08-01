@@ -2,8 +2,6 @@
 
 This repository contains a cross-platform weather forecasting application for **Android** and **iOS**, built with **.NET MAUI**. The application delivers real-time weather data, hourly forecasts, and includes a custom-built, high-performance charting component for data visualization.
 
-The project is architected to be robust, maintainable, and extensible, demonstrating professional software engineering practices within the .NET MAUI framework.
-
 ## Core Features
 
 The application provides a comprehensive and responsive user experience with the following features:
