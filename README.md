@@ -86,12 +86,12 @@ The application requires an API key from [OpenWeatherMap One Call API 3.0](https
   }
 }
 ```
-###Build and Run
+### Build and Run
 Open NatechWeather.sln in Visual Studio.
 Restore NuGet packages for both projects.
 Select the target platform (Android or iOS) and run the application.
 
-###License
+### License
 This project is licensed under the MIT License (LICENSE). See the LICENSE file for details.
 
 
