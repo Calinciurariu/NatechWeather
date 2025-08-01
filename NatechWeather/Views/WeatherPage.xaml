@@ -64,8 +64,6 @@
                           x:Name="lineChart"
                           IsEnabled="{Binding WeatherForecastData.Count, Converter={StaticResource IsGreaterThanZeroConverter}}"
                           IsVisible="{Binding WeatherForecastData.Count, Converter={StaticResource IsGreaterThanZeroConverter}}" />
-
-
     </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -19,8 +19,8 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid    RowDefinitions="*,*" Padding="20"
-              >
+    <Grid    RowDefinitions="*,*" 
+             Padding="20">
         <Grid.Background>
             <LinearGradientBrush StartPoint="0.5,0" EndPoint="1,1"
                                  >
@@ -51,18 +51,11 @@
                         Command="{Binding GetWeatherCommand}"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}" />
             </VerticalStackLayout>
-      
-
-          
-        
-    
 
         <ActivityIndicator IsRunning="{Binding IsBusy}" Grid.RowSpan="2"
                            IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           Color="{DynamicResource Primary}"
-                           />
+                           Color="{DynamicResource Primary}"  />
     </Grid>
-
 </ContentPage>
