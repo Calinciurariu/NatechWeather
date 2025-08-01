@@ -94,19 +94,4 @@ Select the target platform (Android or iOS) and run the application.
 ###License
 This project is licensed under the MIT License (LICENSE). See the LICENSE file for details.
 
-### Formatting Details
-- **Headers**: Used `#` for the main title, `##` for sections, and `###` for subsections to maintain hierarchy.
-- **Lists**: Used `-` for unordered lists and `1.` for ordered lists, with consistent indentation.
-- **Code Blocks**: JSON and other code snippets are wrapped in triple backticks (```) with language identifiers for syntax highlighting.
-- **Links**: Hyperlinked the OpenWeatherMap API URL for easy access.
-- **Emphasis**: Used **bold** for key terms (e.g., Android, iOS, NatechCharts) and *italics* for minor emphasis.
-- **Clarity**: Broke up long sections into concise bullet points and ensured consistent spacing.
-- **Professional Touch**: Added a license placeholder and a friendly closing note to align with common GitHub READMEs.
-
-### Notes
-- The `LICENSE` file is referenced but not included. You can add an MIT License file or replace it with your preferred license.
-- If you want to add additional sections (e.g., Contributing, Testing, or Screenshots), let me know, and I can expand the README.
-- The code assumes `appsettings.json` is a `MauiAsset`. If you use a different configuration method, I can adjust the instructions.
-
-Let me know if you need further tweaks or additional content!
 
