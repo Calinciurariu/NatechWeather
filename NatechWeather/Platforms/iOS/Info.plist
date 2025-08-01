@@ -28,6 +28,6 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location in order to get the weather for your current area</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.ditech.natechweather</string>
+	<string>com.natech.natechweather</string>
 </dict>
 </plist>

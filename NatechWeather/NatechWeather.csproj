@@ -14,7 +14,7 @@
 		<ApplicationTitle>NatechWeather</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.ditech.natechweather</ApplicationId>
+		<ApplicationId>com.natech.natechweather</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
