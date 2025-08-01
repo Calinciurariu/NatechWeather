@@ -10,7 +10,18 @@ namespace NatechWeather
         {
             // if you want to use a different Application Delegate class from "AppDelegate"
             // you can specify it here.
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                Console.WriteLine("Unhandled Exception: " + e.ExceptionObject.ToString());
+            };
+
+            TaskScheduler.UnobservedTaskException += (sender, e) =>
+            {
+                Console.WriteLine("Unobserved Task Exception: " + e.Exception.ToString());
+                e.SetObserved();
+            };
             UIApplication.Main(args, null, typeof(AppDelegate));
+           
         }
     }
 }

@@ -2,35 +2,28 @@
 using NatechWeather.Interfaces;
 using NatechWeather.Models;
 using System.Windows.Input;
-using Microsoft.Maui.Devices.Sensors;
-using System.Collections.ObjectModel;
+using NatechWeather.Services;
 
 namespace NatechWeather.ViewModels
 {
+
     public class MainPageViewModel : BaseViewModel
     {
 
         #region Services
         private readonly INavigationPageService navigationService;
         private readonly IWeatherService weatherService;
+        private readonly IAudioHelper audioHelper;
         #endregion
 
         #region Properties
-        private string _city = string.Empty;
+        private Placemark placemark;
+        private string _city, lastPlacemarkString = string.Empty;
         public string City
         {
             get => _city;
             set => SetProperty(ref _city, value);
         }
-
-        private WeatherResult _weatherResult = new();
-        public WeatherResult WeatherResult
-        {
-            get => _weatherResult;
-            set => SetProperty(ref _weatherResult, value);
-        }
-        public ObservableCollection<WeatherResult> WeatherForecastData { get; } = new ObservableCollection<WeatherResult>();
-
         #endregion
 
         #region Commands
@@ -39,19 +32,20 @@ namespace NatechWeather.ViewModels
         public ICommand GetLocationCommand { get; }
         
         #endregion
-        public MainPageViewModel(INavigationPageService navigation, IWeatherService weatherService) : base(navigation)
+        public MainPageViewModel(INavigationPageService navigation, IWeatherService weatherService, IAudioHelper audioHelper) : base(navigation)
         {
             Title = "Natech Weather";
             navigationService = navigation;
             this.weatherService = weatherService;
-            GetWeatherCommand = new AsyncRelayCommand(GetWeatherAsync);
-            GetWeatherInTenSecondsCommand = new AsyncRelayCommand(GetWeatherAsync);
+            this.audioHelper = audioHelper;
+            GetWeatherCommand = new AsyncRelayCommand(GetWeatherAsyncAndNavigate);
+          //  GetWeatherInTenSecondsCommand = new AsyncRelayCommand(GetWeatherAsync);
             GetLocationCommand = new AsyncRelayCommand(InputLocationAsync);
         }
         private async Task InputLocationAsync()
         {
             if (IsBusy) return;
-
+            IsBusy = true;
             try
             {
                 var location = await Geolocation.Default.GetLastKnownLocationAsync() ??
@@ -66,13 +60,13 @@ namespace NatechWeather.ViewModels
                     await Application.Current.MainPage.DisplayAlert("Error", "Could not retrieve your location.", "OK");
                     return;
                 }
-
+                
                 var placemarks = await Geocoding.Default.GetPlacemarksAsync(location.Latitude, location.Longitude);
-                var placemark = placemarks?.FirstOrDefault();
-
+                placemark = placemarks?.FirstOrDefault();
+                
                 if (placemark != null)
                 {
-                    City = placemark.Locality; 
+                    City = lastPlacemarkString = placemark.Locality??placemark.AdminArea??placemark.SubAdminArea??placemark.SubLocality; 
                 }
             }
             catch (FeatureNotSupportedException)
@@ -87,11 +81,69 @@ namespace NatechWeather.ViewModels
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"An unexpected error occurred: {ex.Message}", "OK");
             }
+            finally
+            {
+                IsBusy = false;
+            }
         }
-        private async Task GetWeatherAsync()
+        private async Task<OneCallResult> FetchWeather(Func<CancellationToken, Task<OneCallResult>> fetchAction)
+        {
+            IsBusy = true;
+
+            try
+            {
+                var weatherData = await fetchAction(CancellationToken.None);
+
+                if (string.IsNullOrWhiteSpace(City) && weatherData.Lat != 0)
+                {
+                    var placemarks = await Geocoding.Default.GetPlacemarksAsync(weatherData.Lat, weatherData.Lon);
+                    City = placemarks?.FirstOrDefault()?.Locality ?? "Current Location";
+                }
+
+                await audioHelper.PlayAudioFileAsync("success.wav");
+                return weatherData;
+            }
+            catch (WeatherServiceException)
+            {
+                await audioHelper.PlayAudioFileAsync("mistake.wav");
+                throw;
+
+            }
+            catch (Exception)
+            {
+                await audioHelper.PlayAudioFileAsync("mistake.wav");
+                throw;
+
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        private async Task<Placemark> GetPlacemarkForCityAsync(string city)
+        {
+            try
+            {
+                var locations = await Geocoding.Default.GetLocationsAsync(city);
+                var location = locations?.FirstOrDefault();
+
+                if (location != null)
+                {
+                    var placemarks = await Geocoding.Default.GetPlacemarksAsync(location.Latitude, location.Longitude);
+                    return placemarks?.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Geocoding failed: {ex.Message}");
+            }
+            return null;
+        }
+        private async Task GetWeatherAsyncAndNavigate()
         {
             if (IsBusy)
                 return;
+            
             IsBusy = true;
             if (string.IsNullOrWhiteSpace(City))
             {
@@ -101,19 +153,29 @@ namespace NatechWeather.ViewModels
             }
             try
             {
-                WeatherResult = await weatherService.GetWeatherForCityAsync(City);
-                WeatherForecastData.Clear();
-                if (WeatherResult != null)
+                OneCallResult weatherData;
+                if (City != lastPlacemarkString)
                 {
-                    WeatherForecastData.Add(WeatherResult);
-                    WeatherForecastData.Add(new WeatherResult { Dt = WeatherResult.Dt + 3600, Main = new Main { Temp = WeatherResult.Main.Temp + 1 } });
-                    WeatherForecastData.Add(new WeatherResult { Dt = WeatherResult.Dt + 7200, Main = new Main { Temp = WeatherResult.Main.Temp - 2 } });
+                    var location = await GetPlacemarkForCityAsync(City);
+                    placemark = location ?? throw new WeatherServiceException("Could not find the specified city.");
                 }
+               
+                weatherData = await FetchWeather(token => weatherService.GetWeatherForLocationAsync(placemark.Location.Latitude, placemark.Location.Longitude, token));
+                var paramsToPass = new Dictionary<string, object> { };
+                paramsToPass.Add("Result", weatherData);
+                paramsToPass.Add("Placemark", placemark);
+
+                await Navigation.NavigateToAsync<WeatherPageViewModel>(nameof(WeatherPageViewModel), paramsToPass);
+
+            }
+            catch (WeatherServiceException ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Failed to fetch weather data: {ex.Message}", "OK");
+                Console.WriteLine($"Error fetching weather: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching weather: {ex.Message}");
-                await Application.Current.MainPage.DisplayAlert("Error", "Failed to fetch weather data.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
             finally
             {

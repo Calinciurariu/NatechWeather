@@ -7,7 +7,6 @@
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
-		<integer>2</integer>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
@@ -16,8 +15,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -30,5 +27,7 @@
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location in order to get the weather for your current area</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.ditech.natechweather</string>
 </dict>
 </plist>

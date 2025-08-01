@@ -1,12 +1,71 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:NatechWeather.ViewModels"
+             xmlns:converter="clr-namespace:NatechWeather.Converters"
+             xmlns:skia="clr-namespace:SkiaSharp;assembly=SkiaSharp"
+             xmlns:controls="clr-namespace:NatechWeather.Controls"
+             xmlns:charts="clr-namespace:NatechCharts.Controls;assembly=NatechCharts"
              x:Class="NatechWeather.Views.WeatherPage"
-             Title="WeatherPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             x:DataType="viewModels:WeatherPageViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="{Binding Title}">
+
+
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+            <converter:IsNotNullConverter x:Key="IsNotNullConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="NavigatedFrom"
+                                        Command="{Binding CleanupCommand}" />
+    </ContentPage.Behaviors>
+    
+    <ContentPage.Content>
+    <VerticalStackLayout IsVisible="{Binding CurrentWeather, Converter={StaticResource IsNotNullConverter}}"
+                         Spacing="5"
+                         Padding="20">
+         
+            <controls:NTSwitch  OnText="Hourly"
+                                IsOn="{Binding IsHourly}"
+                            OffText="Daily"
+                            OnCommand="{Binding SwitchHourlyCommand}"
+                            OffCommand="{Binding SwitchDailyCommand}" />
+
+            <Label Text="{Binding CurrentWeather.Temp, StringFormat='{0:F1}°C'}"
+                   FontSize="48"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center" />
+            <Label Text="{Binding CurrentWeather.Weather[0].Description, FallbackValue='Unknown'}"
+                   FontSize="18"
+                   HorizontalTextAlignment="Center"
+               />
+            <Label FontSize="18"
+                   HorizontalTextAlignment="Center"
+                   LineBreakMode="WordWrap">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Feels Like"
+                              FontSize="16"
+                              FontAttributes="Bold"
+                              />
+                        <Span Text="&#x0a;" />
+                        <Span Text="{Binding CurrentWeather.FeelsLike, FallbackValue='Unknown', StringFormat='{0:F1}°C'}"
+                              FontSize="18"
+                               />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <charts:LineChart HeightRequest="350"
+                          x:Name="lineChart"
+                          IsEnabled="{Binding WeatherForecastData.Count, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                          IsVisible="{Binding WeatherForecastData.Count, Converter={StaticResource IsGreaterThanZeroConverter}}" />
+
+
     </VerticalStackLayout>
+    </ContentPage.Content>
 </ContentPage>

@@ -15,7 +15,11 @@ namespace NatechWeather.Helpers
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
-
+        public RelayCommand(Action execute, Predicate<object?>? canExecute = null)
+        {
+            _execute = _ => execute();
+            _canExecute = canExecute;
+        }
         public bool CanExecute(object? parameter)
         {
             return _canExecute == null || _canExecute(parameter);

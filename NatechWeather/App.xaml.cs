@@ -1,14 +1,15 @@
-﻿using NatechWeather.Views;
+﻿using NatechWeather.ViewModels;
+using NatechWeather.Views;
 
 namespace NatechWeather
 {
     public partial class App : Application
     {
-        public App(MainPage page)
+        public App(MainPageViewModel vm)
         {
             InitializeComponent();
-
-            MainPage = new NavigationPage(page);
+           // Application.Current.UserAppTheme = AppTheme.Dark; dark theme test
+            MainPage = new NavigationPage(new MainPage(vm));
         }
     }
 }

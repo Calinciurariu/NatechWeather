@@ -6,10 +6,14 @@ namespace NatechWeather.Views
     {
         public MainPage(MainPageViewModel vm)
         {
-            InitializeComponent();
             BindingContext = vm;
+            InitializeComponent();
         }
-      
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            var statusRead = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+            LocationInputView.IsEnabledLocation = statusRead == PermissionStatus.Granted;
+        }
     }
-
 }

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NatechWeather.Controls.NTSwitch"
+             x:Name="CurrentControl">
+    <Grid ColumnSpacing="0"
+          Margin="2"
+          x:Name="grdContainer">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Frame CornerRadius="100"
+               Grid.Row="0"
+               Grid.ColumnSpan="2"
+               BackgroundColor="{DynamicResource White}"
+               Style="{DynamicResource NTSwitch-Background}">
+            <Frame.Shadow>
+                <Shadow Brush="Black"
+                        Offset="2, 2"
+                        Opacity="0.5" />
+            </Frame.Shadow>
+        </Frame>
+
+        <Frame Grid.Column="0"
+               Grid.Row="0"
+               Style="{DynamicResource NTSwitch-SelectedBackground}"
+               x:Name="InternalFrame"
+               CornerRadius="100" />
+
+        <Frame  Grid.Row="0"
+                Grid.Column="0"
+                BorderColor="Transparent"
+                BackgroundColor="Transparent"
+                Margin="0"
+                Padding="0">
+            <Grid AutomationId="2"
+                  ColumnDefinitions="auto,*"
+                  x:Name="OffStack">
+                <Grid.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"></PanGestureRecognizer>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="Stack_Tapped" />
+                </Grid.GestureRecognizers>
+                <Label Text="{Binding Source={x:Reference CurrentControl}, Path=OffFAText}"
+                       FontFamily="{Binding Source={x:Reference CurrentControl}, Path=OffFAFontFamily}"
+                       TextColor="{DynamicResource OffBlack}"
+                       Padding="10,0,5,0"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"
+                       x:Name="lblImgOff" />
+                <Label Text="{Binding Source={x:Reference CurrentControl}, Path=OffText}"
+                       Padding="5,0,5,0"
+                       Grid.Column="1"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{DynamicResource OffBlack}"
+                       x:Name="lblTxtOff" />
+            </Grid>
+        </Frame>
+
+        <Frame  Grid.Row="0"
+                Grid.Column="1"
+                BorderColor="Transparent"
+                BackgroundColor="Transparent"
+                Margin="0"
+                Padding="0">
+            <Grid AutomationId="1"
+                  ColumnDefinitions="auto,*"
+                  x:Name="OnStack">
+                <Grid.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"></PanGestureRecognizer>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="Stack_Tapped" />
+                </Grid.GestureRecognizers>
+                <Label Text="{Binding Source={x:Reference CurrentControl}, Path=OnFAText}"
+                       FontFamily="{Binding Source={x:Reference CurrentControl}, Path=OnFAFontFamily}"
+                       TextColor="{DynamicResource Black}"
+                       Padding="5,0,5,0"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"
+                       x:Name="lblImgOn" />
+                <Label Text="{Binding Source={x:Reference CurrentControl}, Path=OnText}"
+                       Grid.Column="1"
+                       Padding="5,0,10,0"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{DynamicResource Black}"
+                       x:Name="lblTxtOn" />
+            </Grid>
+        </Frame>
+    </Grid>
+</ContentView>

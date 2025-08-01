@@ -5,7 +5,12 @@ using NatechWeather.Interfaces;
 using NatechWeather.Services;
 using NatechWeather.ViewModels;
 using NatechWeather.Views;
-using SkiaSharp.Views.Maui.Controls.Hosting; 
+using SkiaSharp.Views.Maui.Controls.Hosting;
+#if ANDROID
+using NatechWeather.Platforms.Android.Services;
+#elif IOS
+using NatechWeather.Platforms.iOS.Services;
+#endif
 namespace NatechWeather
 {
     public static class MauiProgram
@@ -22,6 +27,7 @@ namespace NatechWeather
                 .RegisterViews()
                 .MapViewMoldelsToPages()
                 .UseSkiaSharp()
+                .UseAudioHelper()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -48,13 +54,29 @@ namespace NatechWeather
         }
         public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<IWeatherService, WeatherService>();
+            mauiAppBuilder.Services.AddMemoryCache();
+            mauiAppBuilder.Services.AddSingleton<ICacheService, CacheService>();
+            mauiAppBuilder.Services.AddSingleton<HttpClient>();
+            mauiAppBuilder.Services.AddSingleton<WeatherService>();
+            //decorator
+            mauiAppBuilder.Services.AddSingleton<IWeatherService>(provider =>
+              new CachingWeatherService(
+                  provider.GetRequiredService<WeatherService>(),   
+                  provider.GetRequiredService<ICacheService>(),     
+                  provider.GetRequiredService<ILogger<CachingWeatherService>>() 
+              ));
             return mauiAppBuilder;
         }
         public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddTransient<MainPageViewModel>();
             mauiAppBuilder.Services.AddTransient<WeatherPageViewModel>();
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder UseAudioHelper(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddSingleton<IAudioHelper, AudioHelper>();
+
             return mauiAppBuilder;
         }
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)

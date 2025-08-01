@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:NatechWeather.Converters"
+             xmlns:fa="clr-namespace:NatechWeather.Helpers"
+             x:Class="NatechWeather.Controls.LocationInputView"
+             x:Name="this">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Grid>
+        <Border BackgroundColor="{AppThemeBinding Light={DynamicResource White}, Dark={DynamicResource Gray100}}"
+                Padding="12,0" 
+                HeightRequest="56">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Grid ColumnDefinitions="3*, *"
+                  ColumnSpacing="8">
+
+                <Entry x:Name="InputEntry" Grid.Column="0"
+                       Text="{Binding Source={x:Reference this}, Path=Text}"
+                       VerticalOptions="Center" />
+
+                <Button Style="{DynamicResource Image-Button}" Command="{Binding Source={x:Reference this}, Path=GetLocationCommand}"
+                        Text="{x:Static fa:FontAwesomeIcons.FaGlobe}"
+                        IsEnabled="{Binding Source={x:Reference this}, Path=IsEnabledLocation}"
+                        Grid.Column="1" 
+                        VerticalOptions="Center">
+                  
+                </Button>
+            </Grid>
+        </Border>
+
+        <Label x:Name="PlaceholderLabel"
+               Text="{Binding Source={x:Reference this}, Path=Placeholder}"
+               VerticalOptions="Center"
+               Margin="16,0"
+               InputTransparent="True">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Setter Property="Scale"
+                            Value="1.0" />
+                    <Setter Property="TranslationY"
+                            Value="0" />
+                    <Setter Property="TextColor"
+                            Value="{AppThemeBinding Light={DynamicResource TextSecondary}, Dark={DynamicResource TextSecondaryDark}}" />
+                    <Style.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding Source={x:Reference InputEntry}, Path=IsFocused}"
+                                     Value="True">
+                            <Setter Property="Scale"
+                                    Value="0.8" />
+                            <Setter Property="TranslationY"
+                                    Value="-20" />
+                            <Setter Property="TextColor"
+                                    Value="{DynamicResource Primary}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding Source={x:Reference InputEntry}, Path=IsFocused}"
+                                     Value="False">
+                            <Setter Property="Scale"
+                                    Value="1" />
+                            <Setter Property="TranslationY"
+                                    Value="0" />
+                            <Setter Property="TextColor"
+                                    Value="{DynamicResource Primary}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding Source={x:Reference InputEntry}, Path=Text.Length, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                     Value="True">
+                            <Setter Property="Scale"
+                                    Value="0.8" />
+                            <Setter Property="TranslationY"
+                                    Value="-20" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding Source={x:Reference InputEntry}, Path=Text.Length, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                     Value="False">
+                            <Setter Property="Scale"
+                                    Value="1" />
+                            <Setter Property="TranslationY"
+                                    Value="0" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+    </Grid>
+</ContentView>

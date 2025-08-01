@@ -111,7 +111,7 @@
     </Style>
 
     <Style TargetType="Entry">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource PrimaryDarkText}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14" />
@@ -412,9 +412,12 @@
     </Style>
 
     <Style TargetType="NavigationPage">
-        <Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}" />
-        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource White}}" />
-        <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource White}}" />
+
+        <Setter Property="BarBackgroundColor"
+                Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource OffBlack}}" />
+        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}" />
+        <Setter Property="IconColor"
+                Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}" />
     </Style>
 
     <Style TargetType="TabbedPage">
@@ -422,6 +425,21 @@
         <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
         <Setter Property="UnselectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
         <Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
+    </Style>
+    <Style TargetType="Frame"
+           x:Key="NTSwitch-Background">
+        <Setter Property="BackgroundColor"
+                Value="{StaticResource Black}" />
+    </Style>
+    <Style TargetType="Frame"
+           x:Key="NTSwitch-SelectedBackground">
+        <Setter Property="BackgroundColor"
+                Value="{StaticResource Primary}" />
+    </Style>
+    <Style TargetType="Button"
+           x:Key="Image-Button">
+        <Setter Property="FontFamily"
+                Value="FontAwesomeLight" />
     </Style>
 
 </ResourceDictionary>

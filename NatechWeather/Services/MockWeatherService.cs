@@ -39,5 +39,15 @@ namespace NatechWeather.Services
             }
 );
         }
+
+        public Task<WeatherResult> GetWeatherForCityAsync(string city, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OneCallResult> GetWeatherForLocationAsync(double latitude, double longitude, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
