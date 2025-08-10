@@ -7,6 +7,7 @@
              x:DataType="viewModels:MainPageViewModel"
              xmlns:skia="clr-namespace:SkiaSharp;assembly=SkiaSharp"
              xmlns:charts="clr-namespace:NatechCharts.Controls;assembly=NatechCharts"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="NatechWeather.Views.MainPage"
              NavigationPage.HasNavigationBar="False"
              Title="{Binding Title}">
@@ -19,6 +20,10 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}"
+                                        EventName="Appearing" />
+    </ContentPage.Behaviors>
     <Grid    RowDefinitions="*,*" 
              Padding="20">
         <Grid.Background>
@@ -47,7 +52,7 @@
                                             GetLocationCommand="{Binding GetLocationCommand}" />
 
 
-                <Button Text="Get Weather by City"
+                <Button Text="Get Weather by City" 
                         Command="{Binding GetWeatherCommand}"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}" />
             </VerticalStackLayout>

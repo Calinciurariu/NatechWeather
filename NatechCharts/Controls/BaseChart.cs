@@ -181,7 +181,7 @@ namespace NatechCharts.Controls
         private void OnPaintSurface(object sender, SkiaSharp.Views.Maui.SKPaintGLSurfaceEventArgs e)
         {
             Console.WriteLine("OnPaintSurface: Rendering chart");
-            ChartRenderer.Render(e.Surface, e.BackendRenderTarget.Width, e.BackendRenderTarget.Height, _selectedPoint, _panOffsetX, _isMagnifying, lineColor);
+            ChartRenderer.Render(e.Surface, e.BackendRenderTarget.Width, e.BackendRenderTarget.Height, _selectedPoint, _panOffsetX, _isMagnifying);
         }
     }
 }

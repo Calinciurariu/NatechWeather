@@ -3,6 +3,8 @@ using NatechWeather.Interfaces;
 using NatechWeather.Models;
 using System.Windows.Input;
 using NatechWeather.Services;
+using Plugin.Fingerprint.Abstractions;
+using Plugin.Fingerprint;
 
 namespace NatechWeather.ViewModels
 {
@@ -28,6 +30,7 @@ namespace NatechWeather.ViewModels
 
         #region Commands
         public ICommand GetWeatherCommand { get; }
+        public ICommand AppearingCommand { get; }
         public ICommand GetWeatherInTenSecondsCommand { get; }
         public ICommand GetLocationCommand { get; }
         
@@ -41,7 +44,10 @@ namespace NatechWeather.ViewModels
             GetWeatherCommand = new AsyncRelayCommand(GetWeatherAsyncAndNavigate);
           //  GetWeatherInTenSecondsCommand = new AsyncRelayCommand(GetWeatherAsync);
             GetLocationCommand = new AsyncRelayCommand(InputLocationAsync);
+            AppearingCommand = new AsyncRelayCommand(OnAppearingAsync);
         }
+
+   
         private async Task InputLocationAsync()
         {
             if (IsBusy) return;
@@ -138,6 +144,23 @@ namespace NatechWeather.ViewModels
                 Console.WriteLine($"Geocoding failed: {ex.Message}");
             }
             return null;
+        }
+        private async Task OnAppearingAsync()
+        {
+            await AuthenticateBiometricsAsync();
+        }
+
+        private async Task<bool> AuthenticateBiometricsAsync()
+        {
+            var availability = await CrossFingerprint.Current.IsAvailableAsync();
+
+            if (!availability)
+                return false; 
+
+            var authRequest = new AuthenticationRequestConfiguration("Authentication", "Please authenticate to access the app.");
+            var authResult = await CrossFingerprint.Current.AuthenticateAsync(authRequest);
+
+            return authResult.Authenticated;
         }
         private async Task GetWeatherAsyncAndNavigate()
         {
